@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet Express | Interactive QR Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="min-h-screen">
+    <!-- Header with animated background -->
+    <header class="relative overflow-hidden bg-gradient-to-r from-amber-900 to-amber-700 text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div class="absolute inset-0 opacity-20">
+            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80')] bg-cover bg-center"></div>
+        </div>
+        <div class="relative max-w-7xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 font-playfair">Gourmet Express</h1>
+            <p class="text-xl md:text-2xl mb-8">Digital Menu Experience</p>
+            <div class="inline-block bg-white/20 backdrop-blur-sm rounded-full px-6 py-2">
+                <p class="text-sm md:text-base">Scan QR code to access menu on your phone</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Floating QR Button -->
+    <button id="qrBtn" class="floating-action-btn fixed bottom-8 right-8 bg-amber-600 hover:bg-amber-700 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-xl z-50 transition-all duration-300 hover:rotate-12">
+        <i class="fas fa-qrcode text-2xl"></i>
+    </button>
+
+    <!-- QR Modal -->
+    <div id="qrModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="qr-modal bg-white rounded-xl p-8 max-w-md w-full mx-4 relative">
+            <button id="closeQrModal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            <h3 class="text-2xl font-bold mb-4 text-center">Scan Our Menu</h3>
+            <div id="qrCode" class="flex justify-center mb-6 p-4 bg-white rounded-lg"></div>
+            <p class="text-center text-gray-600 mb-2">Point your camera at the QR code</p>
+            <p class="text-center text-sm text-gray-500">or visit: <span class="font-mono">gourmetexpress.com/menu/1234</span></p>
+        </div>
+    </div>
+
+    <!-- Menu Navigation -->
+    <nav class="sticky top-0 z-40 bg-white shadow-sm py-4 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex overflow-x-auto space-x-6 hide-scrollbar">
+                <button class="category-btn px-4 py-2 rounded-full bg-amber-600 text-white whitespace-nowrap" data-category="all">All Items</button>
+                <button class="category-btn px-4 py-2 rounded-full bg-white text-amber-700 border border-amber-200 hover:bg-amber-50 whitespace-nowrap" data-category="starters">Starters</button>
+                <button class="category-btn px-4 py-2 rounded-full bg-white text-amber-700 border border-amber-200 hover:bg-amber-50 whitespace-nowrap" data-category="mains">Main Courses</button>
+                <button class="category-btn px-4 py-2 rounded-full bg-white text-amber-700 border border-amber-200 hover:bg-amber-50 whitespace-nowrap" data-category="desserts">Desserts</button>
+                <button class="category-btn px-4 py-2 rounded-full bg-white text-amber-700 border border-amber-200 hover:bg-amber-50 whitespace-nowrap" data-category="drinks">Drinks</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Menu Container -->
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <!-- Special Offers Banner -->
+        <div class="mb-12 bg-gradient-to-r from-amber-100 to-amber-50 border border-amber-200 rounded-xl p-6 relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-32 h-32 bg-amber-400 rounded-full opacity-20"></div>
+            <div class="absolute -left-5 -bottom-5 w-24 h-24 bg-amber-300 rounded-full opacity-20"></div>
+            <div class="relative z-10">
+                <h2 class="text-2xl font-bold text-amber-900 mb-2">Today's Specials</h2>
+                <p class="text-amber-800 mb-4">Enjoy these exclusive offers available only today</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white/80 backdrop-blur-sm p-4 rounded-lg border border-amber-200">
+                        <p class="font-bold text-amber-900">Truffle Pasta</p>
+                        <p class="text-sm text-amber-700">20% OFF</p>
+                    </div>
+                    <div class="bg-white/80 backdrop-blur-sm p-4 rounded-lg border border-amber-200">
+                        <p class="font-bold text-amber-900">Wine Pairing</p>
+                        <p class="text-sm text-amber-700">Free glass with main</p>
+                    </div>
+                    <div class="bg-white/80 backdrop-blur-sm p-4 rounded-lg border border-amber-200">
+                        <p class="font-bold text-amber-900">Happy Hour</p>
+                        <p class="text-sm text-amber-700">4-6PM: 2-for-1 cocktails</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Sections -->
+        <section id="starters" class="mb-16">
+            <h2 class="category-title text-3xl font-bold mb-8 text-amber-900 border-b border-amber-200 pb-2">Starters</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Menu Item 1 -->
+                <div class="menu-item bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                    <div class="relative overflow-hidden h-48">
+                        <img src="https://images.unsplash.com/photo-1546069901-ba9590aed2c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80" 
+                             alt="Bruschetta" 
+                             class="item-image w-full h-full object-cover">
+                        <span class="absolute top-4 right-4 price-tag px-3 py-1 rounded-full text-amber-900 font-bold">$9.50</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Truffle Bruschetta <span class="vegetarian"></span></h3>
+                        <p class="text-gray-600 mb-4">Crusty bread topped with fresh tomatoes, basil, and our signature truffle oil</p>
+                        <div class="flex justify-between items-center">
+                            <button class="add-to-order px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-full text-sm transition-colors">
+                                Add to Order <i class="fas fa-plus ml-1"></i>
+                            </button>
+                            <span class="text-xs text-gray-500">Serves 1-2</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Menu Item 2 -->
+                <div class="menu-item bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                    <div class="relative overflow-hidden h-48">
+                        <img src="https://images.unsplash.com/photo-1603105037880-880cd4edfb0d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" 
+                             alt="Calamari" 
+                             class="item-image w-full h-full object-cover">
+                        <span class="absolute top-4 right-4 price-tag px-3 py-1 rounded-full text-amber-900 font-bold">$12.00</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Crispy Calamari <span class="spicy"></span></h3>
+                        <p class="text-gray-600 mb-4">Tender squid lightly battered and fried, served with spicy aioli and lemon wedges</p>
+                        <div class="flex justify-between items-center">
+                            <button class="add-to-order px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-full text-sm transition-colors">
+                                Add to Order <i class="fas fa-plus ml-1"></i>
+                            </button>
+                            <span class="text-xs text-gray-500">Serves 2-3</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Menu Item 3 -->
+                <div class="menu-item bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                    <div class="relative overflow-hidden h-48">
+                        <img src="https://images.unsplash.com/photo-1604977047416-9b3c5a1866fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=735&q=80" 
+                             alt="Caprese Salad" 
+                             class="item-image w-full h-full object-cover">
+                        <span class="absolute top-4 right-4 price-tag px-3 py-1 rounded-full text-amber-900 font-bold">$10.50</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Heirloom Caprese <span class="vegetarian gluten-free"></span></h3>
+                        <p class="text-gray-600 mb-4">Colorful heirloom tomatoes with fresh mozzarella, basil, and balsamic glaze</p>
+                        <div class="flex justify-between items-center">
+                            <button class="add-to-order px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-full text-sm transition-colors">
+                                Add to Order <i class="fas fa-plus ml-1"></i>
+                            </button>
+                            <span class="text-xs text-gray-500">Serves 1-2</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mains" class="mb-16">
+            <h2 class="category-title text-3xl font-bold mb-8 text-amber-900 border-b border-amber-200 pb-2">Main Courses</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Menu Item 4 -->
+                <div class="menu-item bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                    <div class="relative overflow-hidden h-48">
+                        <img src="https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                             alt="Pasta" 
+                             class="item-image w-full h-full object-cover">
+                        <span class="absolute top-4 right-4 price-tag px-3 py-1 rounded-full text-amber-900 font-bold">$18.50</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Truffle Mushroom Pasta <span class="vegetarian"></span></h3>
+                        <p class="text-gray-600 mb-4">Handmade fettuccine with wild mushrooms, cream sauce, and black truffle</p>
+                        <div class="flex justify-between items-center">
+                            <button class="add-to-order px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-full text-sm transition-colors">
+                                Add to Order <i class="fas fa-plus ml-1"></i>
+                            </button>
+                            <span class="text-xs text-gray-500">450 cal</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Menu Item 5 -->
+                <div class="menu-item bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                    <div class="relative overflow-hidden h-48">
+                        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80" 
+                             alt="Steak" 
+                             class="item-image w-full h-full object-cover">
+                        <span class="absolute top-4 right-4 price-tag px-3 py-1 rounded-full text-amber-900 font-bold">$32.00</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Ribeye Steak <span class="spicy"></span></h3>
+                        <p class="text-gray-600 mb-4">12oz grass-fed ribeye with roasted garlic butter and truffle fries</p>
+                        <div class="flex justify-between items-center">
+                            <button class="add-to-order px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-full text-sm transition-colors">
+                                Add to Order <i class="fas fa-plus ml-1"></i>
+                            </button>
+                            <span class="text-xs text-gray-500">720 cal</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Menu Item 6 -->
+                <div class="menu-item bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                    <div class="relative overflow-hidden h-48">
+                        <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                             alt="Salmon" 
+                             class="item-image w-full h-full object-cover">
+                        <span class="absolute top-4 right-4 price-tag px-3 py-1 rounded-full text-amber-900 font-bold">$24.50</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Miso Glazed Salmon <span class="gluten-free"></span></h3>
+                        <p class="text-gray-600 mb-4">Wild-caught salmon with sweet miso glaze and seasonal vegetables</p>
+                        <div class="flex justify-between items-center">
+                            <button class="add-to-order px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-full text-sm transition-colors">
+                                Add to Order <i class="fas fa-plus ml-1"></i>
+                            </button>
+                            <span class="text-xs text-gray-500">580 cal</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="desserts" class="mb-16">
+            <h2 class="category-title text-3xl font-bold mb-8 text-amber-900 border-b border-amber-200 pb-2">Desserts</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Menu Item 7 -->
+                <div class="menu-item bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                    <div class="relative overflow-hidden h-48">
+                        <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1527&q=80" 
+                             alt="Chocolate Lava Cake" 
+                             class="item-image w-full h-full object-cover">
+                        <span class="absolute top-4 right-4 price-tag px-3 py-1 rounded-full text-amber-900 font-bold">$9.00</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Chocolate Lava Cake <span class="vegetarian"></span></h3>
+                        <p class="text-gray-600 mb-4">Warm chocolate cake with molten center, served with vanilla ice cream</p>
+                        <div class="flex justify-between items-center">
+                            <button class="add-to-order px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-full text-sm transition-colors">
+                                Add to Order <i class="fas fa-plus ml-1"></i>
+                            </button>
+                            <span class="text-xs text-gray-500">420 cal</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Menu Item 8 -->
+                <div class="menu-item bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                    <div class="relative overflow-hidden h-48">
+                        <img src="https://images.unsplash.com/photo-1558315957-d6f8b6f4f686?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                             alt="Tiramisu" 
+                             class="item-image w-full h-full object-cover">
+                        <span class="absolute top-4 right-4 price-tag px-3 py-1 rounded-full text-amber-900 font-bold">$8.50</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Classic Tiramisu <span class="vegetarian"></span></h3>
+                        <p class="text-gray-600 mb-4">Layers of coffee-soaked ladyfingers and mascarpone cream</p>
+                        <div class="flex justify-between items-center">
+                            <button class="add-to-order px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-full text-sm transition-colors">
+                                Add to Order <i class="fas fa-plus ml-1"></i>
+                            </button>
+                            <span class="text-xs text-gray-500">380 cal</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Menu Item 9 -->
+                <div class="menu-item bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                    <div class="relative overflow-hidden h-48">
+                        <img src="https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" 
+                             alt="Cheesecake" 
+                             class="item-image w-full h-full object-cover">
+                        <span class="absolute top-4 right-4 price-tag px-3 py-1 rounded-full text-amber-900 font-bold">$8.00</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Berry Cheesecake <span class="vegetarian gluten-free"></span></h3>
+                        <p class="text-gray-600 mb-4">New York style cheesecake with mixed berry compote</p>
+                        <div class="flex justify-between items-center">
+                            <button class="add-to-order px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-full text-sm transition-colors">
+                                Add to Order <i class="fas fa-plus ml-1"></i>
+                            </button>
+                            <span class="text-xs text-gray-500">410 cal</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="drinks" class="mb-16">
+            <h2 class="category-title text-3xl font-bold mb-8 text-amber-900 border-b border-amber-200 pb-2">Drinks</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Menu Item 10 -->
+                <div class="menu-item bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                    <div class="relative overflow-hidden h-48">
+                        <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                             alt="Cocktail" 
+                             class="item-image w-full h-full object-cover">
+                        <span class="absolute top-4 right-4 price-tag px-3 py-1 rounded-full text-amber-900 font-bold">$12.00</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Signature Martini</h3>
+                        <p class="text-gray-600 mb-4">House special with gin, dry vermouth, and a twist of lemon</p>
+                        <div class="flex justify-between items-center">
+                            <button class="add-to-order px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-full text-sm transition-colors">
+                                Add to Order <i class="fas fa-plus ml-1"></i>
+                            </button>
+                            <span class="text-xs text-gray-500">ABV 18%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Menu Item 11 -->
+                <div class="menu-item bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                    <div class="relative overflow-hidden h-48">
+                        <img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" 
+                             alt="Wine" 
+                             class="item-image w-full h-full object-cover">
+                        <span class="absolute top-4 right-4 price-tag px-3 py-1 rounded-full text-amber-900 font-bold">$9.00/glass</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">House Red Wine</h3>
+                        <p class="text-gray-600 mb-4">Cabernet Sauvignon from Napa Valley, California</p>
+                        <div class="flex justify-between items-center">
+                            <button class="add-to-order px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-full text-sm transition-colors">
+                                Add to Order <i class="fas fa-plus ml-1"></i>
+                            </button>
+                            <span class="text-xs text-gray-500">ABV 13.5%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Menu Item 12 -->
+                <div class="menu-item bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                    <div class="relative overflow-hidden h-48">
+                        <img src="https://images.unsplash.com/photo-1600271886742-f049cd5b8a3b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" 
+                             alt="Craft Beer" 
+                             class="item-image w-full h-full object-cover">
+                        <span class="absolute top-4 right-4 price-tag px-3 py-1 rounded-full text-amber-900 font-bold">$7.00</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Local IPA</h3>
+                        <p class="text-gray-600 mb-4">Hoppy craft beer from our neighborhood brewery</p>
+                        <div class="flex justify-between items-center">
+                            <button class="add-to-order px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-full text-sm transition-colors">
+                                Add to Order <i class="fas fa-plus ml-1"></i>
+                            </button>
+                            <span class="text-xs text-gray-500">ABV 6.2%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Order Summary Sidebar -->
+    <div id="orderSidebar" class="fixed top-0 right-0 h-full w-full md:w-96 bg-white shadow-lg transform translate-x-full transition-transform duration-300 z-50 overflow-y-auto">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Your Order</h3>
+                <button id="closeOrderSidebar" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div id="orderItems" class="mb-6">
+                <!-- Order items will be added here dynamically -->
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-shopping-basket text-4xl mb-2"></i>
+                    <p>Your order is empty</p>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-200 pt-4 mb-4">
+                <div class="flex justify-between mb-2">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">$0.00</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span>Tax (8%):</span>
+                    <span id="tax">$0.00</span>
+                </div>
+                <div class="flex justify-between font-bold text-lg">
+                    <span>Total:</span>
+                    <span id="total">$0.00</span>
+                </div>
+            </div>
+            
+            <button id="checkoutBtn" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-lg font-bold transition-colors">
+                Proceed to Checkout
+            </button>
+            
+            <p class="text-center text-sm text-gray-500 mt-4">Have dietary restrictions? Let us know!</p>
+        </div>
+    </div>
+
+    <!-- Order Button -->
+    <button id="viewOrderBtn" class="fixed bottom-8 left-8 bg-amber-600 hover:bg-amber-700 text-white rounded-full px-6 py-3 shadow-lg z-50 flex items-center transition-colors hidden">
+        <i class="fas fa-shopping-basket mr-2"></i>
+        <span id="orderCount" class="font-bold">0</span>
+        <span class="ml-1">items</span>
+    </button>
+
+    <!-- Footer -->
+    <footer class="bg-amber-900 text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Gourmet Express</h3>
+                    <p class="mb-4">Elevating dining experiences through exceptional food and digital innovation.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="hover:text-amber-200"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="hover:text-amber-200"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="hover:text-amber-200"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Hours</h3>
+                    <p class="mb-2">Monday - Thursday: 11am - 10pm</p>
+                    <p class="mb-2">Friday - Saturday: 11am - 11pm</p>
+                    <p>Sunday: 10am - 9pm</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Contact</h3>
+                    <p class="mb-2"><i class="fas fa-map-marker-alt mr-2"></i> 123 Gourmet Street, Foodville</p>
+                    <p class="mb-2"><i class="fas fa-phone mr-2"></i> (555) 123-4567</p>
+                    <p><i class="fas fa-envelope mr-2"></i> hello@gourmetexpress.com</p>
+                </div>
+            </div>
+            <div class="border-t border-amber-800 mt-8 pt-8 text-center text-sm">
+                <p>&copy; 2023 Gourmet Express. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/scripts.js" ></script>
+</body>
+</html>

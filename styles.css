@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f5f2;
+            color: #333;
+        }
+        
+        .menu-item:hover .item-image {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .item-image {
+            transition: all 0.3s ease;
+        }
+        
+        .category-title {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .floating-action-btn {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .price-tag {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        .qr-modal {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .spicy::after {
+            content: "🌶️";
+            margin-left: 5px;
+        }
+        
+        .vegetarian::after {
+            content: "🥬";
+            margin-left: 5px;
+        }
+        
+        .gluten-free::after {
+            content: "🌾";
+            margin-left: 5px;
+        }
